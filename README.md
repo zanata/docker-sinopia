@@ -1,66 +1,45 @@
-## Sinopia (Docker Image)
+## Sinopia
 
-Sinopia is a private npm repository server
+Sinopia is a private npm repository server.
+This is a fork of keyvanfatehi/sinopia[keyvanfatehi/sinopia](https://github.com/keyvanfatehi/sinopia), yet tune for Zanata team.
 
-### Installing Image
+### Sinopia Service Setup
 
-`docker pull keyvanfatehi/sinopia:latest`
+#### Pull Docker Image
 
-### Creating Container
+`docker pull zanata/sinopia2:latest`
 
-`docker run --name sinopia -d -p 4873:4873 keyvanfatehi/sinopia:latest`
+#### Configure
+You can skip to the section **Run Service** if you just want the default 
+configuration.
 
-### Setting Registry
+##### Makefile
+This file configures how the container interact with host.
+Notable variables:
 
+* `CONTAINER_NAME`: container name for `docker run`
+* `HOST_PORT`: host port for container port forwarding.
+* `VOLUME_HOST_DIR`: host directory for volume storage.
+
+These variable can also be passed as environment variables.
+
+##### start.sh
+How the service be run inside the container
+
+#### Run Service
+Simply run the service:
+`make run`
+
+For removing existing container, then run at host port 5000:
+`HOST_PORT=5000 make rerun`
+
+For help:
+`make help`
+
+### NPM Client Setup
+
+Setting NPM Registry:
 `npm set registry http://<docker_host>:4873/`
-
-### Determining Username and Password
-
-`docker logs sinopia`
-
-### Modify configuration
-
-There are two ways to modify the configuration.
-
-To understand the difference, view the conversation here: https://github.com/keyvanfatehi/docker-sinopia/pull/10
-
-### Original Method
-
-```
-docker stop sinopia
-docker run --volumes-from sinopia -it --rm ubuntu vi /opt/sinopia/config.yaml
-docker start sinopia
-```
-
-### Alternative Method
-
-```
-# Save the config file
-curl -L https://raw.githubusercontent.com/rlidwka/sinopia/master/conf/default.yaml -o /path/to/config.yaml
-# Mount the config file to the exposed data volume
-docker run -v /path/to/config.yaml:/opt/sinopia/config.yaml --name sinopia -d -p 4873:4873 keyvanfatehi/sinopia:latest
-```
-
-Restart the container anytime you change the config.
-
-### Backups
-
-`docker run --volumes-from sinopia -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /opt/sinopia`
-
-Alternatively, host path for /opt/sinopia can be determined by running:
-
-`docker inspect sinopia`
-
-### Restore
-
-```
-docker stop sinopia
-docker rm sinopia
-docker run --name sinopia -d -p 4873:4873 keyvanfatehi/sinopia:latest
-docker stop sinopia
-docker run --volumes-from sinopia -v $(pwd):/backup ubuntu tar xvf /backup/backup.tar
-docker start sinopia
-```
 
 ## Links
 

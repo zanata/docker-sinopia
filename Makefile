@@ -1,26 +1,77 @@
-rmi: stop-test
-	docker rmi keyvanfatehi/sinopia 2>&1 > /dev/null
+REGISTRY = docker.io
+REPOSITORY = zanata/sinopia2
+
+## Container name for docker run
+CONTAINER_NAME ?= sinopia
+
+## Host port for docker run
+HOST_PORT ?= 4873
+
+## Host port for docker run
+CONTAINER_PORT ?= 4873
+
+## Host volume storage directory
+VOLUME_HOST_DIR ?= ${HOME}/.cache/sinopia
+VOLUME_CONTAINER_DIR ?= /opt/sinopia/storage
+
+OS := $(shell uname)
+ifeq (${OS},Linux)
+	SELINUX:=1
+ifeq ($(findstring unconfined_t,$(shell id -Z)),)
+	SUDO = sudo
+else
+	SUDO =
+endif
+else
+	SELINUX:=0
+endif
+
+define USAGE
+Targets:
+    help:  Show this heip
+    build: build the image
+    exec:  login to existing container with a shell
+    push:  push the image to registry (only for image author)
+    rerun: Remove the existing container and run
+    run:   invoke a container in default setting
+endef
+
+.PHONY: all help build exec push run ensure-build
+
+export USAGE
+help:
+	@echo "$$USAGE"
 
 build:
-	docker build -t keyvanfatehi/sinopia:latest .
+	docker build -t ${REPOSITORY} .
 
-start-test: stop-test build
-	docker run -p 4873:4873 --name sinopia-test -v /home/docker/sinopia-test:/opt/sinopia/storage keyvanfatehi/sinopia:latest
-	docker logs sinopia-test
+exec:
+	docker exec -it ${CONTAINER_NAME} /bin/bash
 
-stop-test:
-	-docker rm -f sinopia-test 2>&1 > /dev/null
+push: ensure-build
+	docker tag ${REPOSITORY} ${REGISTRY}/${REPOSITORY}
+	docker push ${REGISTRY}/${REPOSITORY}
 
-test: build
-	docker run --rm -i -t keyvanfatehi/sinopia:latest
+rerun:
+ifneq ($(shell docker ps -qf name=${CONTAINER_NAME}),)
+	docker stop ${CONTAINER_NAME}
+	docker rm ${CONTAINER_NAME}
+endif
+	make run
 
-shell: build
-	docker run --rm -i -t keyvanfatehi/sinopia:latest /bin/bash
+run: ensure-build ${VOLUME_HOST_DIR}
+	docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v ${VOLUME_HOST_DIR}:${VOLUME_CONTAINER_DIR} ${REPOSITORY}
 
-logs:
-	docker logs sinopia-test
+##== Supporting targets ==
+${VOLUME_HOST_DIR}:
+	mkdir -p ${VOLUME_HOST_DIR}
+ifeq ($(SELINUX),1)
+	$(SUDO) chcon -Rt svirt_sandbox_file_t ${VOLUME_HOST_DIR}
+endif
 
-publish:
-	docker push keyvanfatehi/sinopia:latest
+##== Build, if not built already
+ensure-build:
+ifeq ($(shell docker images -q ${REPOSITORY}),)
+	make build
+endif
 
-test: start-test
