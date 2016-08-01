@@ -3,8 +3,6 @@
 Sinopia is a private npm repository server.
 This is a fork of [keyvanfatehi/sinopia](https://github.com/keyvanfatehi/sinopia), yet tune for Zanata team.
 
-
-
 ### Sinopia Service Setup (From Source Code)
 #### Configure
 You can skip to the section **Run Service** if you just want the default configuration.
