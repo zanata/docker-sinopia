@@ -2,7 +2,7 @@ FROM node
 MAINTAINER Ding-Yi Chen <dchen@redhat.com>
 ARG USERNAME=sinopia
 ENV HOME_DIR=/opt/$USERNAME
-RUN adduser --disabled-password --gecos "" -d $HOME_DIR $USERNAME
+RUN adduser --disabled-password --gecos "" --home $HOME_DIR $USERNAME
 RUN mkdir -p $HOME_DIR/storage
 WORKDIR $HOME_DIR
 RUN npm install js-yaml sinopia2
