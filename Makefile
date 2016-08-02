@@ -53,9 +53,8 @@ push: ensure-build
 	docker push ${REGISTRY}/${REPOSITORY}
 
 rerun:
-ifneq ($(shell docker ps -qf name=${CONTAINER_NAME}),)
-	docker stop ${CONTAINER_NAME}
-	docker rm ${CONTAINER_NAME}
+ifneq ($(shell docker ps -aqf name=${CONTAINER_NAME}),)
+	docker rm -f ${CONTAINER_NAME}
 endif
 	make run
 
