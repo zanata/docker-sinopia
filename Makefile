@@ -10,8 +10,7 @@ HOST_PORT ?= 4873
 ## Host port for docker run
 CONTAINER_PORT ?= 4873
 
-## Host volume storage directory
-VOLUME_HOST_DIR ?= ${HOME}/.cache/sinopia
+DATA_VOLUME ?= sinopia-data
 VOLUME_CONTAINER_DIR ?= /opt/sinopia/storage
 
 OS := $(shell uname)
@@ -33,6 +32,7 @@ Targets:
     exec:  login to existing container with a shell
     push:  push the image to registry (only for image author)
     rerun: Remove the existing container and run
+    rm:    Remove the container
     run:   invoke a container in default setting
 endef
 
@@ -52,14 +52,19 @@ push: ensure-build
 	docker tag ${REPOSITORY} ${REGISTRY}/${REPOSITORY}
 	docker push ${REGISTRY}/${REPOSITORY}
 
+## 'docker volume ls -f name=${DATA_VOLUME}'  does not seem to work in EL7
 rerun:
 ifneq ($(shell docker ps -aqf name=${CONTAINER_NAME}),)
-	docker rm -f ${CONTAINER_NAME}
+	make rm
 endif
 	make run
 
-run: ensure-build ${VOLUME_HOST_DIR}
-	docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v ${VOLUME_HOST_DIR}:${VOLUME_CONTAINER_DIR} ${REPOSITORY}
+## No need remove Data volume, as it should be kept persistent
+rm:
+	docker rm -f ${CONTAINER_NAME}
+
+run: ensure-build ensure-data-volume
+	docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v ${DATA_VOLUME}:${VOLUME_CONTAINER_DIR} ${REPOSITORY}
 
 ##== Supporting targets ==
 ${VOLUME_HOST_DIR}:
@@ -74,3 +79,7 @@ ifeq ($(shell docker images -q ${REPOSITORY}),)
 	make build
 endif
 
+ensure-data-volume:
+ifeq ($(shell docker volume ls | grep ${DATA_VOLUME}),1)
+    docker volume create --name ${DATA_VOLUME}
+endif

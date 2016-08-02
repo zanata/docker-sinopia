@@ -16,7 +16,7 @@ Notable variables:
 
 * `CONTAINER_NAME`: container name for `docker run`
 * `HOST_PORT`: host port for container port forwarding.
-* `VOLUME_HOST_DIR`: host directory for volume storage.
+* `DATA_VOLUME`: name of data volume.
 
 These variable can also be passed as environment variables.
 
