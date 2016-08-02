@@ -17,7 +17,7 @@ VOLUME_CONTAINER_DIR ?= /opt/sinopia/storage
 OS := $(shell uname)
 ifeq (${OS},Linux)
 	SELINUX:=1
-ifneq ($(findstring unconfined_t,$(shell id -Z)),)
+ifeq ($(findstring unconfined_t,$(shell id -Z)),)
 	SUDO = sudo
 else
 	SUDO =
