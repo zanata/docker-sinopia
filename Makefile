@@ -13,6 +13,8 @@ CONTAINER_PORT ?= 4873
 DATA_VOLUME ?= sinopia-data
 VOLUME_CONTAINER_DIR ?= /opt/sinopia/storage
 
+SYSTEMD_NOTIFY=/bin/systemd-notify
+
 OS := $(shell uname)
 ifeq (${OS},Linux)
 	SELINUX:=1
@@ -27,13 +29,19 @@ endif
 
 define USAGE
 Targets:
-    help:  Show this heip
-    build: build the image
-    exec:  login to existing container with a shell
-    push:  push the image to registry (only for image author)
-    rerun: Remove the existing container and run
-    rm:    Remove the container
-    run:   invoke a container in default setting
+    help:            Show this heip
+    build:           Build the image
+    exec:            Login to existing container with a shell
+    push:            Push the image to registry (only for image author)
+    rerun:           Remove the existing container and run
+    rm:              Remove the container
+    run:             Invoke a container in default setting
+    systemd-start:   Run in systemd, and notify after completion or failed
+    systemd-stop:    Stop in systemd
+endef
+
+define systemd_response
+$(shell if make $(1);then echo "READY=1";else echo "ERRNO=1";fi)
 endef
 
 .PHONY: all help build exec push run ensure-build
@@ -66,14 +74,16 @@ rm:
 run: ensure-build ensure-data-volume
 	docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v ${DATA_VOLUME}:${VOLUME_CONTAINER_DIR} ${REPOSITORY}
 
-##== Supporting targets ==
-${VOLUME_HOST_DIR}:
-	mkdir -p ${VOLUME_HOST_DIR}
-ifeq ($(SELINUX),1)
-	$(SUDO) chcon -Rt svirt_sandbox_file_t ${VOLUME_HOST_DIR}
-endif
 
-##== Build, if not built already
+systemd-start:
+	/bin/systemd-notify $(call systemd_response,run)
+
+systemd-stop:
+	/bin/systemd-notify $(call systemd_response,rm)
+
+##== Supporting targets ==
+
+##=== Build, if not built already ===
 ensure-build:
 ifeq ($(shell docker images -q ${REPOSITORY}),)
 	make build
