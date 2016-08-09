@@ -11,10 +11,11 @@ storage: ./storage
 
 auth:
   htpasswd:
-    file: ./htpasswd
+    file: ./storage/htpasswd
     # Maximum amount of users allowed to register, defaults to "+inf".
     # You can set this to -1 to disable registration.
-    #max_users: 1000
+    # We only need caching, no registration needed
+    max_users: -1
 
 # a list of other known repositories we can talk to
 uplinks:
