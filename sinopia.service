@@ -11,6 +11,7 @@ Group=docker
 WorkingDirectory=/home/sinopia/docker-sinopia
 ExecStart=/bin/make run
 ExecStop=/bin/make rm
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
