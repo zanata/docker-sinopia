@@ -5,7 +5,7 @@ Wants=docker.service
 After=network.target docker.service
 
 [Service]
-Type=notify
+Type=simple
 User=sinopia
 Group=docker
 WorkingDirectory=/home/sinopia/docker-sinopia
