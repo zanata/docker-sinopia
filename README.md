@@ -32,35 +32,33 @@ Simply run the service:
 For removing existing container, then run at host port 5000:
 `HOST_PORT=5000 make rerun`
 
-For s
-
 For help:
 `make help`
 
 ##### Systemd
 1. Create a `sinopia` user, assuming its home directory is `/home/sinopia`. Use following command:
-```bash
-sudo useradd -G docker sinopia
-```
+  ```bash
+  sudo useradd -G docker sinopia
+  ```
 
 2. Login as `sinopia` and git clone the source
-```bash
-sudo su sinopia
-cd 
-git clone https://github.com/zanata/docker-sinopia.git
-exit
-```
+   ```bash
+   sudo su sinopia
+   cd 
+   git clone https://github.com/zanata/docker-sinopia.git
+   exit
+   ```
 
 3. Install sinopia.service to systemd
-```bash
-sudo cp /home/sinopia/docker-sinopia/sinopia.service /etc/systemd/system/multi-user.wants
-sudo systemctl daemon-reload
-```
+   ```bash
+   sudo cp /home/sinopia/docker-sinopia/sinopia.service  /etc/systemd/system/multi-user.target.wants
+   sudo systemctl daemon-reload
+   ```
 
 4. Start the service
-```bash
-sudo systemctl start sinopia
-```
+   ```bash
+   sudo systemctl start sinopia
+   ```
 
 ### Sinopia Service Setup (Without Source Code)
 #### Pull Docker Image
