@@ -1,15 +1,16 @@
 [Unit]
-Type=notify
 Description=Sinopia2 npm package cache service
 Documentation=https://github.com/zanata/docker-sinopia
-After=network.target
+Wants=docker.service
+After=network.target docker.service
 
 [Service]
+Type=notify
 User=sinopia
 Group=docker
 WorkingDirectory=/home/sinopia/docker-sinopia
-ExecStart=/bin/make systemd-start
-ExecStop=/bin/make systemd-stop
+ExecStart=/bin/make run
+ExecStop=/bin/make rm
 
 [Install]
 WantedBy=multi-user.target

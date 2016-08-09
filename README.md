@@ -54,6 +54,7 @@ exit
 3. Install sinopia.service to systemd
 ```bash
 sudo cp /home/sinopia/docker-sinopia/sinopia.service /etc/systemd/system/multi-user.wants
+sudo systemctl daemon-reload
 ```
 
 4. Start the service

@@ -36,13 +36,8 @@ Targets:
     rerun:           Remove the existing container and run
     rm:              Remove the container
     run:             Invoke a container in default setting
-    systemd-start:   Run in systemd, and notify after completion or failed
-    systemd-stop:    Stop in systemd
 endef
 
-define systemd_response
-$(shell if make $(1);then echo "READY=1";else echo "ERRNO=1";fi)
-endef
 
 .PHONY: all help build exec push run ensure-build
 
@@ -73,13 +68,6 @@ rm:
 
 run: ensure-build ensure-data-volume
 	docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v ${DATA_VOLUME}:${VOLUME_CONTAINER_DIR} ${REPOSITORY}
-
-
-systemd-start:
-	/bin/systemd-notify $(call systemd_response,run)
-
-systemd-stop:
-	/bin/systemd-notify $(call systemd_response,rm)
 
 ##== Supporting targets ==
 
