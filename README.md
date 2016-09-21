@@ -1,10 +1,10 @@
 ## Sinopia
 
 Sinopia is a private npm repository server.
-This is a fork of [keyvanfatehi/sinopia](https://github.com/keyvanfatehi/sinopia), yet tune for Zanata team.
+This is a fork of [keyvanfatehi/sinopia](https://github.com/keyvanfatehi/sinopia), tuned for the Zanata team.
 
 This service uses data volume, thus requires docker >= 1.9.0.
-Fedora 24 and latest RHEL 7 have this capability.
+Fedora 23 and latest RHEL 7 have this capability.
 
 ### Dependency
 
