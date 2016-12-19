@@ -50,14 +50,14 @@ For help:
 2. Login as `sinopia` and git clone the source
    ```bash
    sudo su sinopia
-   cd 
-   git clone https://github.com/zanata/docker-sinopia.git
+   cd
+   git clone https://github.com/zanata/zanata-sinopia-docker-files.git
    exit
    ```
 
 3. Install sinopia.service to systemd
    ```bash
-   sudo cp /home/sinopia/docker-sinopia/sinopia.service  /etc/systemd/system/multi-user.target.wants
+   sudo cp /home/sinopia/zanata-sinopia-docker-files/sinopia.service  /etc/systemd/system/multi-user.target.wants
    sudo systemctl daemon-reload
    ```
 
@@ -70,7 +70,7 @@ For help:
 #### Pull Docker Image
 `docker pull zanata/sinopia2:latest`
 
-##### Without git clone docker-sinopia
+##### Without git clone zanata-sinopia-docker-files
 `docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:4873 -v ${VOLUME_HOST_DIR}:/opt/sinopia/storage zanata/sinopia2:latest`
 
 ### NPM Client Setup
@@ -78,7 +78,7 @@ Setting NPM Registry:
 `npm set registry http://${DOCKER_HOST}:${HOST_PORT}/`
 
 For examples, use:
-`npm set registry http://localhost:4873/` 
+`npm set registry http://localhost:4873/`
 if you run your sinopia at localhost, default port `4873`.
 
 ### Check the Service

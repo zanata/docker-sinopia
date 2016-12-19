@@ -1,6 +1,6 @@
 [Unit]
 Description=Sinopia2 npm package cache service
-Documentation=https://github.com/zanata/docker-sinopia
+Documentation=https://github.com/zanata/zanata-sinopia-docker-files
 Wants=docker.service
 After=network.target docker.service
 
@@ -8,7 +8,7 @@ After=network.target docker.service
 Type=simple
 User=sinopia
 Group=docker
-WorkingDirectory=/home/sinopia/docker-sinopia
+WorkingDirectory=/home/sinopia/zanata-sinopia-docker-files
 ExecStart=/bin/make run
 ExecStop=/bin/make rm
 RemainAfterExit=yes
