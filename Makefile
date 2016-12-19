@@ -57,17 +57,17 @@ push: ensure-build
 
 ## 'docker volume ls -f name=${DATA_VOLUME}'  does not seem to work in EL7
 rerun:
-ifneq ($(shell docker ps -aqf name=${CONTAINER_NAME}),)
 	make rm
-endif
 	make run
 
 ## No need remove Data volume, as it should be kept persistent
 rm:
+ifneq ($(shell docker ps -aqf name=${CONTAINER_NAME}),)
 	docker rm -f ${CONTAINER_NAME}
+endif
 
 run: ensure-build ensure-data-volume
-	docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v ${DATA_VOLUME}:${VOLUME_CONTAINER_DIR} ${REPOSITORY}
+	docker run -i --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} -v ${DATA_VOLUME}:${VOLUME_CONTAINER_DIR} ${REPOSITORY}
 
 ##== Supporting targets ==
 

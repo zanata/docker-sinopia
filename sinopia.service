@@ -11,7 +11,6 @@ Group=docker
 WorkingDirectory=/home/sinopia/zanata-sinopia-docker-files
 ExecStart=/bin/make run
 ExecStop=/bin/make rm
-RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
