@@ -6,11 +6,11 @@ After=network.target docker.service
 
 [Service]
 Type=simple
+Restart=always
 User=sinopia
 Group=docker
-WorkingDirectory=/home/sinopia/zanata-sinopia-docker-files
-ExecStart=/bin/make run
-ExecStop=/bin/make rm
+ExecStart=/usr/bin/docker-compose -f /home/sinopia/sinopia.yaml up
+ExecStop=/usr/bin/docker-compose -f /home/sinopia/sinopia.yaml stop
 
 [Install]
 WantedBy=multi-user.target

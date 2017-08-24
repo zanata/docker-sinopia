@@ -28,6 +28,8 @@ else
 endif
 
 define USAGE
+This Makefile is depreciated!
+
 Targets:
     help:            Show this heip
     build:           Build the image

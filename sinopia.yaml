@@ -1,0 +1,13 @@
+version: '2'
+services:
+  sinopia:
+    image: "docker.io/zanata/sinopia2:latest"
+    container_name: sinopia
+    ports:
+      - 4873:4873
+    volumes:
+      - sinopia-data:/opt/sinopia/storage:Z
+
+volumes:
+    sinopia-data: {}
+

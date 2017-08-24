@@ -1,0 +1,44 @@
+#!/bin/bash
+set -eu
+print_usage(){
+   cat <<END
+Usage: image-build [-a] [-l]
+
+Build the docker image.
+
+OPTIONS
+   -a: Auto tag version
+   -l: Tag as latest as well.
+END
+}
+Help=1
+Auto=0
+Latest=1
+
+while getopts "al" opt;do
+    case $opt in
+        a )
+            Help=0
+            Auto=1
+            ;;
+        l )
+            Help=0
+            Latest=1
+            ;;
+    esac
+done
+
+if [[ $Help -eq 1 ]];then
+    print_usage
+    exit 0
+fi
+
+if [[ $Auto -eq 1 ]];then
+    ver=$(sed  -n -e '/LABEL version=/ s/LABEL version=\([0-9.-]*\)/\1/p' Dockerfile)
+    docker build --tag docker.io/zanata/sinopia2:$ver .
+fi
+
+if [[ $Latest -eq 1 ]];then
+    docker build --tag docker.io/zanata/sinopia2:latest .
+fi
+

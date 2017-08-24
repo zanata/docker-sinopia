@@ -4,14 +4,68 @@ Sinopia is a private npm repository server.
 This is a fork of [keyvanfatehi/sinopia](https://github.com/keyvanfatehi/sinopia), tuned for the Zanata team.
 
 This service uses data volume, thus requires docker >= 1.9.0.
-Fedora 23 and latest RHEL 7 have this capability.
+Fedora >= 23 and latest RHEL 7 have this capability.
 
-### Dependency
+### 1. Installation
 
 
-### Sinopia Service Setup (From Source Code)
-#### Configure
-You can skip to the section **Run Service** if you just want the default configuration.
+#### With Atomic Host (recommended)
+If you are using Fedora Atomic Host, just use:
+
+```bash
+atomic install sinopia
+```
+
+#### With docker
+
+1. Pull zanata/sinopia2 image
+  ```bash
+  docker pull docker.io/zanata/sinopia2
+  ```
+
+2. Create sinopia user at host
+  ```bash
+  getent passwd sinopia >/dev/null || sudo useradd -G docker sinopia
+  ```
+3. Download `sinopia.yaml`
+  ```bash
+  sudo curl -o ~sinopia/sinopia.yaml https://raw.githubusercontent.com/zanata/zanata-sinopia-docker-files/master/sinopia.yaml
+  ```
+
+4. Download `sinopia.service`
+  ```bash
+  sudo curl -o /etc/systemd/system/sinopia.service https://raw.githubusercontent.com/zanata/zanata-sinopia-docker-files/master/sinopia.service
+  ```
+5. Setup systemd
+  ```bash
+  sudo systemctl daemon-reload && sudo systemctl enable sinopia
+  ```
+
+### 2. Run service
+```bash
+sudo systemctl start
+```
+
+### 3. NPM Client Setup
+Setting NPM Registry:
+```bash
+npm set registry http://${DOCKER_HOST}:${HOST_PORT}/
+```
+
+For examples, use:
+```bash
+npm set registry http://localhost:4873/
+```
+if you run your sinopia at localhost, default port `4873`.
+
+### 4. Check the Service
+
+1. Use browser to go to `http://${DOCKER_HOST}:${HOST_PORT}/`.
+You should see system running.
+
+2. Running `npm install <package>` and see if the package download successfully. *Notes: cached packages do not show in web UI. Sinopia Web UI only show manually published packages.*
+
+### A. Files
 
 ##### Dockerfile
 Configure how the docker image be built.
@@ -29,7 +83,7 @@ These variable can also be passed as environment variables.
 ##### start.sh
 How the service be run inside the container
 
-#### Run Service
+###  B. Old Way to Run Service
 
 ##### Simple
 Simply run the service:
@@ -73,17 +127,4 @@ For help:
 ##### Without git clone zanata-sinopia-docker-files
 `docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:4873 -v ${VOLUME_HOST_DIR}:/opt/sinopia/storage zanata/sinopia2:latest`
 
-### NPM Client Setup
-Setting NPM Registry:
-`npm set registry http://${DOCKER_HOST}:${HOST_PORT}/`
-
-For examples, use:
-`npm set registry http://localhost:4873/`
-if you run your sinopia at localhost, default port `4873`.
-
-### Check the Service
-1. Use browser to go to `http://${DOCKER_HOST}:${HOST_PORT}/`.
-You should see system running.
-
-2. Running `npm install <package>` and see if the package download successfully. *Notes: cached packages do not show in web UI. Sinopia Web UI only show manually published packages.*
 
